@@ -22,26 +22,14 @@ stateForNeighborhood [] = 0
 stateForNeighborhood (x:xs) = (if x /= 0 then setBit 0 len else 0) + stateForNeighborhood xs
 	where len = length xs
 
---Takes a list of neighborhoods and returns a list containing the binary value of each neighborhood
-statesForNeighborhoods :: [[Integer]] -> [Integer]
-statesForNeighborhoods [] = []
-statesForNeighborhoods (x:xs) = stateForNeighborhood x : statesForNeighborhoods xs
-
 --Takes a rule and a state and returns the next state
 nextStateForRule :: Integer -> Integer -> Integer
 nextStateForRule rule currState = if testBit rule (fromIntegral currState) then 1 else 0
-
---Maps a set of states to the next set of states using a rule
-nextLineForStates :: [Integer] -> Integer -> [Integer]
-nextLineForStates [] rule = []
-nextLineForStates (x:xs) rule = nextStateForRule rule x : nextLineForStates xs rule
  
 --Takes a line of a 1D cellular automaton and returns the next line
 nextLineForLine :: [Integer] -> Integer -> [Integer]
 nextLineForLine [] rule = []
-nextLineForLine n rule = nextLineForStates (statesForNeighborhoods (neighborhoodsForLine (wrappedLine n))) rule
-
-
+nextLineForLine n rule = map (nextStateForRule rule) (map stateForNeighborhood (neighborhoodsForLine (wrappedLine n)))
 
 
 
