@@ -13,11 +13,13 @@ automatonLineToString n = concat (map show n) ++ "\n"
 
 --Outer function for running an automaton. Concatenates the seed line with 
 --the output of the rest of the automaton
+runAutomaton :: Integer -> [Integer] -> Integer -> String
 runAutomaton rule seed iterations
 	| iterations > 0 = (automatonLineToString seed) ++ runAutomatonHelper rule seed (iterations-1)
 	| otherwise = ""	
 
 --Recursively assembles the output for the given automaton line by line
+runAutomatonHelper ::  Integer -> [Integer] -> Integer -> String
 runAutomatonHelper rule line iterations 
 	| iterations == 0 = automatonLineToString nextLine
 	| iterations > 0 = (automatonLineToString nextLine) ++ runAutomaton rule nextLine (iterations-1)
@@ -26,7 +28,9 @@ runAutomatonHelper rule line iterations
 
 main = do 
 	let seed = seedLine 80 40
-	let rule = 30
+	putStrLn "Please specify the Wolfram number of the automaton you wish to print"
+	ruleStr <- getLine
+	let rule = read ruleStr :: Integer
 	putStrLn (runAutomaton rule seed 50)
 	
 	
