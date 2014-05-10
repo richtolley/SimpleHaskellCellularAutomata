@@ -6,22 +6,28 @@ seedLine 0 startIndex = []
 seedLine 1 startIndex = if startIndex == 0 then [1] else [0]
 seedLine n startIndex = (if startIndex == n then 1 else 0):seedLine (n - 1) startIndex
 
-outputToPrintFromList :: [Integer] -> String
-outputToPrintFromList [] = ""
-outputToPrintFromList n = concat (map show n) ++ "\n"
+--Takes an array representing the state of an automaton and converts it to a string
+automatonLineToString :: [Integer] -> String
+automatonLineToString [] = ""
+automatonLineToString n = concat (map show n) ++ "\n"
 
+--Outer function for running an automaton. Concatenates the seed line with 
+--the output of the rest of the automaton
+runAutomaton rule seed iterations
+	| iterations > 0 = (automatonLineToString seed) ++ runAutomatonHelper rule seed (iterations-1)
+	| otherwise = ""	
 
-generateOutputForAutomaton rule line iterations 
-	| iterations == 0 = outputToPrintFromList nextLine
-	| iterations > 0 = (outputToPrintFromList nextLine) ++ generateOutputForAutomaton rule nextLine (iterations-1)
+--Recursively assembles the output for the given automaton line by line
+runAutomatonHelper rule line iterations 
+	| iterations == 0 = automatonLineToString nextLine
+	| iterations > 0 = (automatonLineToString nextLine) ++ runAutomaton rule nextLine (iterations-1)
 	where nextLine = nextLineForLine line rule
 
 
 main = do 
 	let seed = seedLine 80 40
 	let rule = 30
-	putStrLn (outputToPrintFromList seed)
-	putStrLn (generateOutputForAutomaton rule seed 50)
+	putStrLn (runAutomaton rule seed 50)
 	
 	
 	
